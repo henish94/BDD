@@ -109,11 +109,11 @@ jobs:
       - name: Run BDD tests
         run: |
           if [ "$TEST_TYPE" = "all" ]; then
-            npm run test:bdd
+            npm run test:bdd:headless
           elif [ "$TEST_TYPE" = "smoke" ]; then
-            npm run test:bdd -- --tags "@smoke"
+            HEADLESS=true npm run test:bdd -- --tags "@smoke"
           elif [ "$TEST_TYPE" = "regression" ]; then
-            npm run test:bdd -- --tags "@regression"
+            HEADLEASS=true npm run test:bdd -- --tags "@regression"
           else
             echo "Invalid TEST_TYPE: $TEST_TYPE"
             exit 1
