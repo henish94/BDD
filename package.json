@@ -1,19 +1,21 @@
 {
   "name": "bdd-practice",
   "version": "1.0.0",
+  "description": "",
   "main": "cucumber.js",
   "scripts": {
-    "test:bdd": "HEADLESS=false cucumber-js",
-    "test:bdd:headless": "HEADLESS=true cucumber-js",
-    "test:bdd:dry": "HEADLESS=false cucumber-js --dry-run",
-
-    "test:bdd:smoke": "HEADLESS=false cucumber-js --tags @smoke",
-    "test:bdd:regression": "HEADLESS=false cucumber-js --tags @regression",
-
-    "test:bdd:login": "HEADLESS=false cucumber-js features/login.feature",
-    "test:bdd:abhibus": "HEADLESS=false cucumber-js features/abhibus.feature",
-    "test:bdd:flight": "HEADLESS=false cucumber-js features/flight.feature"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:bdd": "cucumber-js",
+    "test:bdd:dry": "cucumber-js --dry-run",
+    "test:bdd:smoke": "cucumber-js --profile smoke",
+    "test:bdd:login": "cucumber-js login.feature",
+    "test:bdd:abhibus": "cucumber-js abhibus.feature",
+    "test:bdd:flight": "cucumber-js flight.feature",
+    "test:bdd:profile": "cucumber-js --profile profile"
   },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
     "@cucumber/cucumber": "^12.9.0",
