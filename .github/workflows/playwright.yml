@@ -12,21 +12,31 @@ on:
           - dev
           - qa
           - stage
-      testType:                    
+      testType:
         description: "Select Test Suite"
         required: true
-        type: choice
         default: "all"
+        type: choice
         options:
           - smoke
           - regression
           - all
 
   push:
-    branches: [main, master, Day06-POM_Architecture, Day07-Environment_Configuration, Final_Assignment]
+    branches:
+      - main
+      - master
+      - Day06-POM_Architecture
+      - Day07-Environment_Configuration
+      - Final_Assignment
 
   pull_request:
-    branches: [main, master, Day06-POM_Architecture, Day07-Environment_Configuration, Final_Assignment]
+    branches:
+      - main
+      - master
+      - Day06-POM_Architecture
+      - Day07-Environment_Configuration
+      - Final_Assignment
 
 jobs:
   test:
@@ -34,23 +44,26 @@ jobs:
     environment: ${{ github.event.inputs.test_env || 'qa' }}
 
     services:
-    mysql:
-      image: mysql:8.0
-      env:
-        MYSQL_ROOT_PASSWORD: ${{ vars.DB_PASSWORD }}
-        MYSQL_DATABASE: ${{ vars.DB_NAME }}
-      ports:
-        - 3306:3306
-      options: >-
-        --health-cmd="mysqladmin ping -h localhost -p${{ secrets.DB_PASSWORD }}"
-        --health-interval=10s
-        --health-timeout=5s
-        --health-retries=5
-          
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ${{ secrets.DB_PASSWORD }}
+          MYSQL_DATABASE: ${{ vars.DB_NAME }}
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -p${{ secrets.DB_PASSWORD }}"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
+
     env:
-      DB_HOST: ${{ vars.DB_HOST }}
-      DB_USER: ${{ vars.DB_USER }}
-      DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+      TEST_ENV: ${{ github.event.inputs.test_env || 'qa' }}
+      TEST_TYPE: ${{ github.event.inputs.testType || 'all' }}
+
+      DB_HOST: 127.0.0.1
+      DB_USER: root
+      DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
       DB_NAME: ${{ vars.DB_NAME }}
 
     steps:
@@ -78,27 +91,38 @@ jobs:
       - name: Install MySQL Client
         run: sudo apt-get update && sudo apt-get install -y mysql-client
 
+      - name: Wait for MySQL
+        run: |
+          until mysqladmin ping -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" --silent; do
+            echo "Waiting for MySQL..."
+            sleep 2
+          done
+
       - name: Initialize Database
-        run: mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < sql/init.sql
+        run: mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" < sql/init.sql
 
       - name: Verify Database Data
         run: |
-          mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME -e "SELECT * FROM booking_contact_details;"
-          mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME -e "SELECT * FROM passengers;"
+          mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT * FROM booking_contact_details;"
+          mysql -h "$DB_HOST" -u "$DB_USER" -p"$DB_PASSWORD" "$DB_NAME" -e "SELECT * FROM passengers;"
 
       - name: Run BDD tests
         run: |
-          if [ "$TAG" = "@all" ]; then
+          if [ "$TEST_TYPE" = "all" ]; then
             npm run test:bdd
+          elif [ "$TEST_TYPE" = "smoke" ]; then
+            npm run test:bdd -- --tags "@smoke"
+          elif [ "$TEST_TYPE" = "regression" ]; then
+            npm run test:bdd -- --tags "@regression"
           else
-            npm run test:bdd -- --tags "$TAG"
+            echo "Invalid TEST_TYPE: $TEST_TYPE"
+            exit 1
           fi
- 
 
       - name: Upload Playwright HTML report
         if: always()
         uses: actions/upload-artifact@v4
         with:
-          name: playwright-report-${{ env.TEST_ENV }}
+          name: playwright-report-${{ env.TEST_ENV }}-${{ env.TEST_TYPE }}
           path: playwright-report/
           retention-days: 30
