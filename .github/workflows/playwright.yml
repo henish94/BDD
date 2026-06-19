@@ -1,27 +1,104 @@
 name: Playwright Tests
+
 on:
+  workflow_dispatch:
+    inputs:
+      test_env:
+        description: "Select environment"
+        required: true
+        default: "qa"
+        type: choice
+        options:
+          - dev
+          - qa
+          - stage
+      testType:                    
+        description: "Select Test Suite"
+        required: true
+        type: choice
+        default: "all"
+        options:
+          - smoke
+          - regression
+          - all
+
   push:
-    branches: [ main, master ]
+    branches: [main, master, Day06-POM_Architecture, Day07-Environment_Configuration, Final_Assignment]
+
   pull_request:
-    branches: [ main, master ]
+    branches: [main, master, Day06-POM_Architecture, Day07-Environment_Configuration, Final_Assignment]
+
 jobs:
   test:
-    timeout-minutes: 60
     runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.test_env || 'qa' }}
+
+    services:
+    mysql:
+      image: mysql:8.0
+      env:
+        MYSQL_ROOT_PASSWORD: ${{ vars.DB_PASSWORD }}
+        MYSQL_DATABASE: ${{ vars.DB_NAME }}
+      ports:
+        - 3306:3306
+      options: >-
+        --health-cmd="mysqladmin ping -h localhost -p${{ secrets.DB_PASSWORD }}"
+        --health-interval=10s
+        --health-timeout=5s
+        --health-retries=5
+          
+    env:
+      DB_HOST: ${{ vars.DB_HOST }}
+      DB_USER: ${{ vars.DB_USER }}
+      DB_PASSWORD: ${{ vars.DB_PASSWORD }}
+      DB_NAME: ${{ vars.DB_NAME }}
+
     steps:
-    - uses: actions/checkout@v4
-    - uses: actions/setup-node@v4
-      with:
-        node-version: lts/*
-    - name: Install dependencies
-      run: npm ci
-    - name: Install Playwright Browsers
-      run: npx playwright install --with-deps
-    - name: Run Playwright tests
-      run: npx playwright test
-    - uses: actions/upload-artifact@v4
-      if: ${{ !cancelled() }}
-      with:
-        name: playwright-report
-        path: playwright-report/
-        retention-days: 30
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Verify env file exists
+        run: |
+          echo "TEST_ENV=$TEST_ENV"
+          ls -la
+          test -f ".env.$TEST_ENV" || exit 1
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps
+
+      - name: Install MySQL Client
+        run: sudo apt-get update && sudo apt-get install -y mysql-client
+
+      - name: Initialize Database
+        run: mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME < sql/init.sql
+
+      - name: Verify Database Data
+        run: |
+          mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME -e "SELECT * FROM booking_contact_details;"
+          mysql -h $DB_HOST -u $DB_USER -p$DB_PASSWORD $DB_NAME -e "SELECT * FROM passengers;"
+
+      - name: Run BDD tests
+        run: |
+          if [ "$TAG" = "@all" ]; then
+            npm run test:bdd
+          else
+            npm run test:bdd -- --tags "$TAG"
+          fi
+ 
+
+      - name: Upload Playwright HTML report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ env.TEST_ENV }}
+          path: playwright-report/
+          retention-days: 30

@@ -1,0 +1,38 @@
+{
+    "Journey_Detail": {
+        "BOARDING_CITY": "Ahmedabad",
+        "DESTINATION_CITY": "Mumbai",
+        "DATE_OF_JOURNEY": "18"
+    },
+    "Invalid_Journey_Detail": {
+        "BOARDING_CITY": "Ahmedabad",
+        "DESTINATION_CITY": "Umrali",
+        "DATE_OF_JOURNEY": "25"
+    },
+    "BOOKING_DETAILS": {
+        "contactDetails": {
+            "mobileNumber": "8200079192",
+            "emailId": "tradahenish94@gmail.com"
+        },
+        "passengers": [
+            {
+                "name": "Henish Trada",
+                "age": "21",
+                "gender": "Male"
+            },
+            {
+                "name": "Rahul Shah",
+                "age": "22",
+                "gender": "Male"
+            }
+        ]
+    },
+    "Flight_Passenger_Detail": {
+        "savedPassengers": [
+            "Mr Henish Trada",
+            "Mr Harsh Trada",
+            "Ms Drashti Trada",
+            "Mr Badal Barasiya"
+        ]
+    }
+}

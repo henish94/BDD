@@ -1,0 +1,11 @@
+{
+  "cucumber.features": [
+    "features/**/*.feature"
+  ],
+  "cucumber.glue": [
+    "steps/**/*.steps.ts",
+    "support/**/*.ts"
+  ],
+  "cucumber.tsconfig": "tsconfig.json",
+  "postman.settings.dotenv-detection-notification-visibility": false
+}

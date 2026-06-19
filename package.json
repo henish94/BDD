@@ -1,22 +1,32 @@
 {
-  "name": "bdd",
+  "name": "bdd-practice",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "cucumber.js",
   "scripts": {
-    "test:bdd": "cucumber",
-    "bdd:run": "npx bddgen && npx playwright test"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "test:bdd": "cucumber-js",
+    "test:bdd:dry": "cucumber-js --dry-run",
+    "test:bdd:smoke": "cucumber-js --profile smoke",
+    "test:bdd:login": "cucumber-js login.feature",
+    "test:bdd:abhibus": "cucumber-js abhibus.feature",
+    "test:bdd:flight": "cucumber-js flight.feature",
+    "test:bdd:profile": "cucumber-js --profile profile"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "type": "commonjs",
   "devDependencies": {
-    "@playwright/test": "^1.60.0",
+    "@cucumber/cucumber": "^12.9.0",
+    "@cucumber/pretty-formatter": "^4.0.0",
+    "@playwright/test": "^1.61.0",
     "@types/node": "^25.9.3",
-    "playwright-bdd": "^9.1.0"
+    "multiple-cucumber-html-reporter": "^4.0.0",
+    "ts-node": "^10.9.2"
   },
   "dependencies": {
-    "dotenv": "^17.4.2"
+    "dotenv": "^17.4.2",
+    "mysql2": "^3.22.5"
   }
 }
