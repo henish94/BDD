@@ -3,16 +3,16 @@
   "version": "1.0.0",
   "main": "cucumber.js",
   "scripts": {
-    "test:bdd": "cross-env HEADLESS=false cucumber-js",
-    "test:bdd:headless": "cross-env HEADLESS=true cucumber-js",
-    "test:bdd:dry": "cross-env HEADLESS=false cucumber-js --dry-run",
+    "test:bdd": "HEADLESS=false cucumber-js",
+    "test:bdd:headless": "HEADLESS=true cucumber-js",
+    "test:bdd:dry": "HEADLESS=false cucumber-js --dry-run",
 
-    "test:bdd:smoke": "cross-env HEADLESS=false cucumber-js --tags @smoke",
-    "test:bdd:regression": "cross-env HEADLESS=false cucumber-js --tags @regression",
+    "test:bdd:smoke": "HEADLESS=false cucumber-js --tags @smoke",
+    "test:bdd:regression": "HEADLESS=false cucumber-js --tags @regression",
 
-    "test:bdd:login": "cross-env HEADLESS=false cucumber-js features/login.feature",
-    "test:bdd:abhibus": "cross-env HEADLESS=false cucumber-js features/abhibus.feature",
-    "test:bdd:flight": "cross-env HEADLESS=false cucumber-js features/flight.feature"
+    "test:bdd:login": "HEADLESS=false cucumber-js features/login.feature",
+    "test:bdd:abhibus": "HEADLESS=false cucumber-js features/abhibus.feature",
+    "test:bdd:flight": "HEADLESS=false cucumber-js features/flight.feature"
   },
   "type": "commonjs",
   "devDependencies": {
@@ -20,7 +20,6 @@
     "@cucumber/pretty-formatter": "^4.0.0",
     "@playwright/test": "^1.61.0",
     "@types/node": "^25.9.3",
-    "cross-env": "^7.0.3",
     "multiple-cucumber-html-reporter": "^4.0.0",
     "ts-node": "^10.9.2"
   },
