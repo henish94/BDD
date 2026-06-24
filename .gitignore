@@ -7,5 +7,12 @@ node_modules/
 /playwright/.cache/
 /playwright/.auth/
 reports/
+.env
 
 features/flight.feature
+pages/FlightHomePage.ts
+pages/FlightPassengerInfoPage.ts
+pages/FlightSeatSelection.ts
+pages/FlightSelectionPage.ts
+pages/LoginPage.ts
+steps/flight.steps.ts
