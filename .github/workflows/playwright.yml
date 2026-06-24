@@ -61,6 +61,7 @@ jobs:
       TEST_ENV: ${{ github.event.inputs.test_env || 'qa' }}
       TEST_TYPE: ${{ github.event.inputs.testType || 'all' }}
       BASE_URL: ${{ secrets.BASE_URL }}
+      HEADLESS: true
       DB_HOST: ${{ vars.DB_HOST }}
       DB_USER: ${{ vars.DB_USER }}
       DB_PASSWORD: ${{ vars.DB_PASSWORD }}

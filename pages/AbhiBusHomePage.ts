@@ -22,8 +22,12 @@ export class AbhiBusHomePage {
  
     async AbhiBusURL(): Promise<void> {
         await this.page.goto(ENV.BASE_URL);
+        await this.page.waitForLoadState('networkidle');
         await expect(this.page).toHaveURL(/abhibus/);
-        await expect(this.fromInput).toBeVisible({timeout: 30000});
+
+        // Wait explicitly for the leaving-from input to appear (helps in headless/CI)
+        await this.page.waitForSelector('[placeholder="Leaving From"]', { state: 'visible', timeout: 30000 });
+        await expect(this.fromInput).toBeVisible({ timeout: 30000 });
     }
  
     async fromInputField(leavingCityName: string): Promise<void>{
