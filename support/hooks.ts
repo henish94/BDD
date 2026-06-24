@@ -3,8 +3,11 @@ import { chromium } from '@playwright/test';
 import { AbhiBus } from './world';
 import * as fs from 'fs';                          
 
+// Ensure HEADLESS defaults to 'true' when no env is provided
+process.env.HEADLESS = process.env.HEADLESS ?? 'true';
+
 BeforeAll(async function () {
-  console.log('\n=== YC Test Suite Starting ===');
+  console.log('\n=== AbhiBus Test Suite Starting ===');
 });
 
 Before(async function (this: AbhiBus) {

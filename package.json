@@ -6,7 +6,6 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "test:bdd": "cucumber-js",
-    "test:bdd:headless": "HEADLESS=true cucumber-js",
     "test:bdd:dry": "cucumber-js --dry-run",
     "test:bdd:smoke": "cucumber-js --profile smoke",
     "test:bdd:login": "cucumber-js login.feature",
