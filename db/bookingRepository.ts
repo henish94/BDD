@@ -16,7 +16,7 @@ export async function getBookingDetails() {
   const [passengerRows]: any = await connection.query(
     `SELECT name, age, gender
      FROM passengers
-     WHERE booking_contact_id = ?`,
+     WHERE id = ?`,
     [contact.id]
   );
 
